@@ -1,0 +1,8 @@
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.csproj.AssemblyReference.cache
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.AssemblyInfoInputs.cache
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.AssemblyInfo.cs
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.csproj.CoreCompileInputs.cache
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\User\StudioProjects\cinema-app-back\cinema-app-back\obj\Debug\net8.0\cinema-app-back.sourcelink.json

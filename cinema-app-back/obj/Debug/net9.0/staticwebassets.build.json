@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "DT1DI8drcKIy8vHcZzFU4g4Qga6NN1F28BkT48lWj3U=",
+  "Source": "cinema-app-back",
+  "BasePath": "_content/cinema-app-back",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
