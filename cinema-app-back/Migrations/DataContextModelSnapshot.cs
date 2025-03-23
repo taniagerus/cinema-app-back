@@ -181,6 +181,10 @@ namespace cinema_app_back.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("text");
@@ -313,17 +317,20 @@ namespace cinema_app_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CinemaId")
+                    b.Property<int?>("CinemaId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("HallId")
+                    b.Property<int?>("HallId")
                         .HasColumnType("integer");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -387,7 +394,6 @@ namespace cinema_app_back.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -537,17 +543,13 @@ namespace cinema_app_back.Migrations
 
             modelBuilder.Entity("cinema_app_back.Models.Showtime", b =>
                 {
-                    b.HasOne("cinema_app_back.Models.Cinema", "Cinema")
+                    b.HasOne("cinema_app_back.Models.Cinema", null)
                         .WithMany("Showtimes")
-                        .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CinemaId");
 
-                    b.HasOne("cinema_app_back.Models.Hall", "Hall")
+                    b.HasOne("cinema_app_back.Models.Hall", null)
                         .WithMany("Showtimes")
-                        .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HallId");
 
                     b.HasOne("Movie", "Movie")
                         .WithMany("Showtimes")
@@ -555,17 +557,13 @@ namespace cinema_app_back.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cinema");
-
-                    b.Navigation("Hall");
-
                     b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("cinema_app_back.Models.Ticket", b =>
                 {
                     b.HasOne("cinema_app_back.Models.Showtime", "Showtime")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("ShowtimeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -594,6 +592,11 @@ namespace cinema_app_back.Migrations
             modelBuilder.Entity("cinema_app_back.Models.Hall", b =>
                 {
                     b.Navigation("Showtimes");
+                });
+
+            modelBuilder.Entity("cinema_app_back.Models.Showtime", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

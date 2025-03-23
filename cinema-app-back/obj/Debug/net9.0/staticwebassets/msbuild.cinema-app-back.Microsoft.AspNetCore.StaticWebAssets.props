@@ -1,0 +1,76 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\8b4e0d21-1030-4879-9a47-877538a9ea5e.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>cinema-app-back</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/cinema-app-back</BasePath>
+      <RelativePath>images/movies/8b4e0d21-1030-4879-9a47-877538a9ea5e.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>5wg27ey18n</Fingerprint>
+      <Integrity>BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\8b4e0d21-1030-4879-9a47-877538a9ea5e.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\c85e4eb2-994e-4858-933c-40b535371b8e.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>cinema-app-back</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/cinema-app-back</BasePath>
+      <RelativePath>images/movies/c85e4eb2-994e-4858-933c-40b535371b8e.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>5wg27ey18n</Fingerprint>
+      <Integrity>BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\c85e4eb2-994e-4858-933c-40b535371b8e.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>cinema-app-back</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/cinema-app-back</BasePath>
+      <RelativePath>images/movies/dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>5wg27ey18n</Fingerprint>
+      <Integrity>BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\ed9dd9bb-345c-45d8-8883-97a8a0ff378f.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>cinema-app-back</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/cinema-app-back</BasePath>
+      <RelativePath>images/movies/ed9dd9bb-345c-45d8-8883-97a8a0ff378f.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>do1dqm6bhq</Fingerprint>
+      <Integrity>vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\movies\ed9dd9bb-345c-45d8-8883-97a8a0ff378f.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+  </ItemGroup>
+</Project>
