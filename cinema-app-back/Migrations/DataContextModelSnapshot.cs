@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using cinema_app_back;
+using cinema_app_back.Data;
 
 #nullable disable
 
@@ -317,13 +317,13 @@ namespace cinema_app_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
+                    b.Property<int>("CinemaId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("HallId")
+                    b.Property<int>("HallId")
                         .HasColumnType("integer");
 
                     b.Property<int>("MovieId")
@@ -543,19 +543,27 @@ namespace cinema_app_back.Migrations
 
             modelBuilder.Entity("cinema_app_back.Models.Showtime", b =>
                 {
-                    b.HasOne("cinema_app_back.Models.Cinema", null)
+                    b.HasOne("cinema_app_back.Models.Cinema", "Cinema")
                         .WithMany("Showtimes")
-                        .HasForeignKey("CinemaId");
+                        .HasForeignKey("CinemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("cinema_app_back.Models.Hall", null)
+                    b.HasOne("cinema_app_back.Models.Hall", "Hall")
                         .WithMany("Showtimes")
-                        .HasForeignKey("HallId");
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Movie", "Movie")
                         .WithMany("Showtimes")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cinema");
+
+                    b.Navigation("Hall");
 
                     b.Navigation("Movie");
                 });

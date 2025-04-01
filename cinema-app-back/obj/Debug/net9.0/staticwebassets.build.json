@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "EB5aqIunFvjJkS9+K3kALxjd5tGBwxt+9NUV13DNYHk=",
+  "Hash": "63bAzPwTJxTO529N4alGlSiLXCXbbgUQM1YwEmIoD7k=",
   "Source": "cinema-app-back",
   "BasePath": "_content/cinema-app-back",
   "Mode": "Default",
@@ -38,6 +38,27 @@
       "OriginalItemSpec": "wwwroot\\images\\movies\\8b4e0d21-1030-4879-9a47-877538a9ea5e.jpg"
     },
     {
+      "Identity": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg",
+      "SourceId": "cinema-app-back",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\",
+      "BasePath": "_content/cinema-app-back",
+      "RelativePath": "images/movies/b6d2866c-099e-45fc-abd2-f2f9d0fb3013#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "do1dqm6bhq",
+      "Integrity": "vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\movies\\b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg"
+    },
+    {
       "Identity": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\c85e4eb2-994e-4858-933c-40b535371b8e.jpg",
       "SourceId": "cinema-app-back",
       "SourceType": "Discovered",
@@ -57,27 +78,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\movies\\c85e4eb2-994e-4858-933c-40b535371b8e.jpg"
-    },
-    {
-      "Identity": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg",
-      "SourceId": "cinema-app-back",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\",
-      "BasePath": "_content/cinema-app-back",
-      "RelativePath": "images/movies/dafc8aa8-13f6-4d44-aa3c-c28352d90624#[.{fingerprint}]?.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "5wg27ey18n",
-      "Integrity": "BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\movies\\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg"
     },
     {
       "Identity": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\ed9dd9bb-345c-45d8-8883-97a8a0ff378f.jpg",
@@ -125,7 +125,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 22 Mar 2025 15:42:46 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -170,7 +170,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 22 Mar 2025 15:42:46 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -181,6 +181,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4="
+        }
+      ]
+    },
+    {
+      "Route": "images/movies/b6d2866c-099e-45fc-abd2-f2f9d0fb3013.do1dqm6bhq.jpg",
+      "AssetFile": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 20:26:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "do1dqm6bhq"
+        },
+        {
+          "Name": "label",
+          "Value": "images/movies/b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/movies/b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg",
+      "AssetFile": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 20:26:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vdvNs4Pg+T8hqR8KZP9D3htJCNRDr1+8D5i0WlYEpZQ="
         }
       ]
     },
@@ -207,7 +289,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 22 Mar 2025 15:35:37 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -252,89 +334,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 22 Mar 2025 15:35:37 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4="
-        }
-      ]
-    },
-    {
-      "Route": "images/movies/dafc8aa8-13f6-4d44-aa3c-c28352d90624.5wg27ey18n.jpg",
-      "AssetFile": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "35647"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 23 Mar 2025 12:24:59 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "5wg27ey18n"
-        },
-        {
-          "Name": "label",
-          "Value": "images/movies/dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4="
-        }
-      ]
-    },
-    {
-      "Route": "images/movies/dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg",
-      "AssetFile": "C:\\Users\\User\\StudioProjects\\cinema-app-back\\cinema-app-back\\wwwroot\\images\\movies\\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "35647"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"BYHsK78sjZdPLhwA2CDLRmcyFI7PqeKzUp3kGBp8qI4=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 23 Mar 2025 12:24:59 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -371,7 +371,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 23 Mar 2025 16:44:56 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -416,7 +416,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 23 Mar 2025 16:44:56 GMT"
+          "Value": "Mon, 24 Mar 2025 19:02:51 GMT"
         },
         {
           "Name": "Cache-Control",

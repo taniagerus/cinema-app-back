@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace cinema_app_back
+namespace cinema_app_back.Data
 {
     public class DataContext : IdentityDbContext<User>
     {

@@ -1,4 +1,4 @@
 wwwroot\images\movies\8b4e0d21-1030-4879-9a47-877538a9ea5e.jpg
+wwwroot\images\movies\b6d2866c-099e-45fc-abd2-f2f9d0fb3013.jpg
 wwwroot\images\movies\c85e4eb2-994e-4858-933c-40b535371b8e.jpg
-wwwroot\images\movies\dafc8aa8-13f6-4d44-aa3c-c28352d90624.jpg
 wwwroot\images\movies\ed9dd9bb-345c-45d8-8883-97a8a0ff378f.jpg

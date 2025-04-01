@@ -1,4 +1,4 @@
-﻿namespace cinema_app_back.Services;
+namespace cinema_app_back.Services;
 using cinema_app_back.Models;
 
 using System.IdentityModel.Tokens.Jwt;
@@ -13,11 +13,13 @@ public class TokenService
     private const int ExpirationMinutes = 30;
     private readonly ILogger<TokenService> _logger;
     private readonly UserManager<User> _userManager;
+    private readonly PostgresRoleService _postgresRoleService;
 
-    public TokenService(ILogger<TokenService> logger, UserManager<User> userManager = null)
+    public TokenService(ILogger<TokenService> logger, UserManager<User> userManager = null, PostgresRoleService postgresRoleService = null)
     {
         _logger = logger;
         _userManager = userManager;
+        _postgresRoleService = postgresRoleService;
     }
 
     public async Task<string> CreateTokenAsync(User user)
@@ -100,6 +102,14 @@ public class TokenService
                 foreach (var role in roles)
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role));
+                    
+                    // Add PostgreSQL role claim if service is available
+                    if (_postgresRoleService != null && Enum.TryParse<Role>(role, out var appRole))
+                    {
+                        var postgresRole = _postgresRoleService.MapRoleToPostgresRole(appRole);
+                        claims.Add(new Claim("PostgresRole", postgresRole));
+                        _logger.LogInformation($"Added PostgreSQL role claim: {postgresRole}");
+                    }
                 }
                 _logger.LogInformation($"Added roles from roles list: {string.Join(", ", roles)}");
             }
@@ -108,6 +118,14 @@ public class TokenService
             {
                 claims.Add(new Claim(ClaimTypes.Role, user.Role.ToString()));
                 _logger.LogInformation($"Added role from user.Role: {user.Role}");
+                
+                // Add PostgreSQL role claim if service is available
+                if (_postgresRoleService != null)
+                {
+                    var postgresRole = _postgresRoleService.MapRoleToPostgresRole(user.Role);
+                    claims.Add(new Claim("PostgresRole", postgresRole));
+                    _logger.LogInformation($"Added PostgreSQL role claim: {postgresRole}");
+                }
             }
 
             return claims;

@@ -1,4 +1,6 @@
 ﻿namespace cinema_app_back.Controllers;
+
+using cinema_app_back.Data;
 using cinema_app_back.Models;
 
 using cinema_app_back.Services;

@@ -1,20 +1,18 @@
-using cinema_app_back;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using cinema_app_back.Models; // Updated namespace
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using cinema_app_back.Models;
 using cinema_app_back.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+using cinema_app_back.Middleware;
+using cinema_app_back.Repositories;
+using cinema_app_back.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.SetIsOriginAllowed(origin => true) // Для розробки
+        builder.SetIsOriginAllowed(origin => true)
                .AllowAnyMethod()
                .AllowAnyHeader()
                .WithExposedHeaders("WWW-Authenticate", "Authorization")
@@ -31,10 +29,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDirectoryBrowser();
 
-// Add JSON options before Swagger configuration
+// Configure static files
+builder.Services.Configure<StaticFileOptions>(options =>
+{
+    options.ServeUnknownFileTypes = true;
+    options.OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        ctx.Context.Response.Headers.Add("Cache-Control", "public,max-age=86400");
+    };
+});
+
+// Add controllers and configure JSON options
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -42,11 +50,14 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+builder.Services.AddEndpointsApiExplorer();
+
+// Configure Swagger
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "Cinema API", 
+    option.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Cinema API",
         Version = "v1",
         Description = "API for Cinema Application",
         Contact = new OpenApiContact
@@ -55,10 +66,9 @@ builder.Services.AddSwaggerGen(option =>
             Email = "support@cinema.com"
         }
     });
-    
-    // Configure Swagger to handle enums as strings
+
     option.UseInlineDefinitionsForEnums();
-    
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -68,7 +78,7 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-    
+
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -84,6 +94,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -105,17 +116,17 @@ builder.Services.AddDbContext<DataContext>(options =>
     }
 });
 
-builder.Services.AddScoped<TokenService, TokenService>();
+// Add services
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PostgresRoleService>();
+builder.Services.AddScoped<RoleBasedDbContextFactory>();
 
-// Configure JSON options
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+// Add repositories
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IShowtimesRepository, ShowtimesRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
-// Specify identity requirements
-// Must be added before .AddAuthentication otherwise a 404 is thrown on authorized endpoints
+// Add Identity
 builder.Services
     .AddIdentity<User, IdentityRole>(options =>
     {
@@ -129,93 +140,54 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
 
-// Додавання AutoMapper
+// Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-// These will eventually be moved to a secrets file, but for alpha development appsettings is fine
-var validIssuer = builder.Configuration.GetValue<string>("JwtTokenSettings:ValidIssuer");
-var validAudience = builder.Configuration.GetValue<string>("JwtTokenSettings:ValidAudience");
-var symmetricSecurityKey = builder.Configuration.GetValue<string>("JwtTokenSettings:SymmetricSecurityKey");
-
+// Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtTokenSettings");
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(options =>
+.AddJwtBearer(options =>
+{
+    options.IncludeErrorDetails = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        options.IncludeErrorDetails = true;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = validIssuer,
-            ValidAudience = validAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(symmetricSecurityKey)
-            ),
-            NameClaimType = ClaimTypes.Name,
-            RoleClaimType = ClaimTypes.Role
-        };
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["ValidIssuer"],
+        ValidAudience = jwtSettings["ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["SymmetricSecurityKey"])
+        ),
+        NameClaimType = ClaimTypes.Name,
+        RoleClaimType = ClaimTypes.Role
+    };
 
-        // Додамо обробку подій для діагностики
-        options.Events = new JwtBearerEvents
+    // JWT Events handling
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
         {
-            OnAuthenticationFailed = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogError($"Authentication failed: {context.Exception.Message}");
-                
-                return Task.CompletedTask;
-            },
-            OnTokenValidated = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                var identity = context.Principal?.Identity as ClaimsIdentity;
-                var claims = identity?.Claims?.Select(c => $"{c.Type}: {c.Value}")?.ToList() ?? new List<string>();
-                
-                logger.LogInformation($"Token validated successfully. Claims: {string.Join(", ", claims)}");
-                
-                return Task.CompletedTask;
-            },
-            OnMessageReceived = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                
-                if (!string.IsNullOrEmpty(token))
-                {
-                    logger.LogInformation($"JWT token received, length: {token.Length}");
-                }
-                else
-                {
-                    // Перевіряємо наявність токена в query string (для тестування)
-                    token = context.Request.Query["auth"].FirstOrDefault();
-                    if (!string.IsNullOrEmpty(token))
-                    {
-                        context.Token = token;
-                        logger.LogInformation($"JWT token received from query string, length: {token.Length}");
-                    }
-                    else
-                    {
-                        logger.LogWarning("No JWT token found in request");
-                    }
-                }
-                
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogWarning($"Authentication challenge issued: {context.Error}, {context.ErrorDescription}");
-                
-                return Task.CompletedTask;
-            }
-        };
-    });
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            var identity = context.Principal?.Identity as ClaimsIdentity;
+            var claims = identity?.Claims?.Select(c => $"{c.Type}: {c.Value}")?.ToList() ?? new List<string>();
+            logger.LogInformation($"Token validated successfully. Claims: {string.Join(", ", claims)}");
+            return Task.CompletedTask;
+        }
+    };
+});
 
 var app = builder.Build();
 
@@ -246,14 +218,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure error handling
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger(c =>
-    {
-        c.SerializeAsV2 = false;
-    });
+    app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cinema API V1");
@@ -266,100 +235,29 @@ else
     app.UseHsts();
 }
 
-// Add CORS middleware
 app.UseCors();
 
-// Додаємо підтримку статичних файлів
-app.UseStaticFiles();
-
-// Додаємо діагностичний ендпоінт для JWT
-app.MapGet("/debug-jwt", (HttpContext context) => {
-    var authHeader = context.Request.Headers.Authorization.ToString();
-    var claims = context.User?.Claims?.Select(c => new { c.Type, c.Value })?.ToList();
-    
-    return Results.Ok(new { 
-        IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
-        AuthType = context.User?.Identity?.AuthenticationType,
-        AuthHeader = authHeader,
-        Claims = claims,
-        IsInAdminRole = context.User?.IsInRole("Admin")
-    });
-});
-
-// Діагностичний ендпоінт для перевірки токенів
-app.MapGet("/api/debug-token", (HttpContext context) => {
-    try {
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        var headers = context.Request.Headers;
-        var auth = headers.Authorization.ToString();
-        
-        logger.LogInformation($"Auth header: {auth}");
-        
-        var authParts = auth.Split(' ');
-        string token = auth;
-        
-        if (authParts.Length > 1 && authParts[0].Equals("Bearer", StringComparison.OrdinalIgnoreCase))
-        {
-            token = authParts[1];
-        }
-        
-        var handler = new JwtSecurityTokenHandler();
-        JwtSecurityToken jwtToken = null;
-        
-        try {
-            jwtToken = handler.ReadJwtToken(token);
-        }
-        catch (Exception ex) {
-            logger.LogError(ex, "Error parsing token");
-            
-            // Спробуємо знайти токен в query string
-            token = context.Request.Query["auth"].ToString();
-            if (!string.IsNullOrEmpty(token)) {
-                try {
-                    jwtToken = handler.ReadJwtToken(token);
-                }
-                catch {
-                    // Ігноруємо помилку
-                }
-            }
-        }
-        
-        return Results.Ok(new {
-            TokenValid = jwtToken != null,
-            Headers = headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
-            Claims = jwtToken?.Claims.Select(c => new { c.Type, c.Value }).ToList(),
-            UserAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
-            UserClaims = context.User?.Claims.Select(c => new { c.Type, c.Value }).ToList()
-        });
-    }
-    catch (Exception ex) {
-        return Results.BadRequest(new { error = ex.Message });
-    }
-});
-
-// Додаємо тестовий ендпоінт для перевірки JWT токенів з frontend
-app.MapGet("/api/test-auth", [Authorize] (HttpContext context) =>
+app.UseStaticFiles(new StaticFileOptions
 {
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-    var identity = context.User?.Identity;
-    var claims = context.User?.Claims?.Select(c => new { c.Type, c.Value })?.ToList();
-    
-    logger.LogInformation($"Токен авторизації пройшов перевірку. Користувач: {identity?.Name}, Ролі: {string.Join(", ", context.User?.Claims?.Where(c => c.Type == ClaimTypes.Role)?.Select(c => c.Value) ?? Array.Empty<string>())}");
-    
-    return Results.Ok(new { 
-        isAuthenticated = identity?.IsAuthenticated,
-        userName = identity?.Name,
-        claims = claims,
-        roles = context.User?.Claims?.Where(c => c.Type == ClaimTypes.Role)?.Select(c => c.Value)?.ToList()
-    });
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        ctx.Context.Response.Headers.Add("Cache-Control", "public,max-age=86400");
+    }
+});
+
+app.UseDirectoryBrowser(new DirectoryBrowserOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "images")),
+    RequestPath = "/images"
 });
 
 app.UseHttpsRedirection();
 app.UseStatusCodePages();
-
-// Обов'язково перші Authentication, потім Authorization
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UsePostgresRoleMiddleware();
 app.MapControllers();
+
 app.Run();

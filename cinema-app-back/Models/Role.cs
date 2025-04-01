@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace cinema_app_back.Models
@@ -10,6 +10,9 @@ namespace cinema_app_back.Models
 		Admin,
 		
 		[EnumMember(Value = "User")]
-		User
+		User,
+        
+        [EnumMember(Value = "Guest")]
+        Guest
 	}
 }

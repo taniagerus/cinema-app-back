@@ -1,19 +1,112 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_12",
-    "RelativePath": "api/debug-token",
+    "ContainingType": "cinema_app_back.Controllers.HallsController",
+    "Method": "GetHalls",
+    "RelativePath": "api/halls",
     "HttpMethod": "GET",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[cinema_app_back.DTOs.HallDto, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.HallsController",
+    "Method": "CreateHall",
+    "RelativePath": "api/halls",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hallDto",
+        "Type": "cinema_app_back.DTOs.HallDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.HallDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.HallsController",
+    "Method": "GetHall",
+    "RelativePath": "api/halls/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.HallDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.HallsController",
+    "Method": "UpdateHall",
+    "RelativePath": "api/halls/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "hallDto",
+        "Type": "cinema_app_back.DTOs.HallDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.HallsController",
+    "Method": "DeleteHall",
+    "RelativePath": "api/halls/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "cinema_app_back.Controllers.MoviesController",
@@ -215,94 +308,34 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "cinema_app_back.Controllers.MoviesController",
-    "Method": "TestCreateMovie",
-    "RelativePath": "api/movies/test-create",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "Id",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "Title",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Genre",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Image",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Description",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "AgeRating",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "DurationInMinutes",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "Director",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Language",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "imageFile",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Movie",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "cinema_app_back.Controllers.MoviesController",
-    "Method": "TokenDebug",
-    "RelativePath": "api/movies/token-debug",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "cinema_app_back.Controllers.ShowtimesController",
     "Method": "GetShowtimes",
     "RelativePath": "api/showtimes",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "date",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "startTimeFrom",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "startTimeTo",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[cinema_app_back.DTOs.ShowtimeDto, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
@@ -405,22 +438,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
-    "RelativePath": "api/test-auth",
-    "HttpMethod": "GET",
-    "IsController": false,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
     "ContainingType": "cinema_app_back.Controllers.UsersController",
     "Method": "CheckAuth",
     "RelativePath": "api/users/auth-test",
@@ -471,22 +488,6 @@
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
-    "RelativePath": "debug-jwt",
-    "HttpMethod": "GET",
-    "IsController": false,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
-      }
-    ]
   },
   {
     "ContainingType": "cinema_app_back.Controllers.WeatherForecastController",
