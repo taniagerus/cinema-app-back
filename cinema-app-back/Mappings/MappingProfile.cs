@@ -8,21 +8,34 @@ namespace cinema_app_back.Mappings
     {
         public MappingProfile()
         {
+            // Cinema маппінги
+            CreateMap<Cinema, CinemaDto>();
+            CreateMap<CinemaDto, Cinema>();
+
             // Showtime маппінги
             CreateMap<Showtime, ShowtimeDto>();
             CreateMap<ShowtimeDto, Showtime>();
-            CreateMap<HallDto, Hall>();
+
+            // Hall маппінги
             CreateMap<Hall, HallDto>();
+            CreateMap<HallDto, Hall>();
+            CreateMap<CreateHallDto, Hall>();
+
+            // Movie маппінги
             CreateMap<Movie, MovieDto>();
             CreateMap<MovieDto, Movie>();
+
+            // Ticket маппінги
             CreateMap<Ticket, TicketDto>();
             CreateMap<TicketDto, Ticket>();
+
+            // User маппінги
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+
+            // Seat маппінги
             CreateMap<Seat, SeatDto>();
             CreateMap<SeatDto, Seat>();
-
-            // Можна додати інші маппінги за потреби
         }
     }
 } 

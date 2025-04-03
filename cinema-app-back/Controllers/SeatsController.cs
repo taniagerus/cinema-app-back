@@ -39,13 +39,13 @@ namespace cinema_app_back.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting seats");
-                return StatusCode(500, "Inner server error");
+                return StatusCode(500, "Internal server error");
             }
         }
 
         // GET: api/seats/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HallDto>> GetSeat(int id)
+        public async Task<ActionResult<SeatDto>> GetSeat(int id)
         {
             try
             {
@@ -60,50 +60,40 @@ namespace cinema_app_back.Controllers
                     return NotFound();
                 }
 
-                return _mapper.Map<HallDto>(seat);
+                return _mapper.Map<SeatDto>(seat);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Помилка при отриманні інформації про зал з ID: {id}");
-                return StatusCode(500, "Внутрішня помилка сервера");
+                _logger.LogError(ex, $"Error finding seat with ID: {id}");
+                return StatusCode(500, "Internal server error");
             }
         }
 
-       
+        // PUT: api/seats/5
         [HttpPut("{id}")]
-
-        public async Task<IActionResult> UpdateHall(int id, HallDto hallDto)
+        public async Task<IActionResult> UpdateSeat(int id, SeatDto seatDto)
         {
             try
             {
-                _logger.LogInformation($"Спроба оновлення залу з ID: {id}");
+                _logger.LogInformation($"Trying to update seat with ID: {id}");
 
-                var hall = await _context.Halls.FindAsync(id);
-                if (hall == null)
+                var seat = await _context.Seats.FindAsync(id);
+                if (seat == null)
                 {
-                    _logger.LogWarning($"Зал з ID {id} не знайдено");
+                    _logger.LogWarning($"Seat with ID {id} not found");
                     return NotFound();
                 }
 
-                var cinema = await _context.Cinemas.FindAsync(hallDto.CinemaId);
-                if (cinema == null)
-                {
-                    return BadRequest($"Кінотеатр з ID {hallDto.CinemaId} не знайдено");
-                }
-
-                // Оновлення властивостей залу
-                hall.Name = hallDto.Name;
-                hall.CinemaId = hallDto.CinemaId;
-
-                _context.Update(hall);
+                _mapper.Map(seatDto, seat);
+                _context.Update(seat);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation($"Зал з ID {id} успішно оновлено");
+                _logger.LogInformation($"Seat with ID {id} successfully updated");
                 return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HallExists(id))
+                if (!SeatExists(id))
                 {
                     return NotFound();
                 }
@@ -111,43 +101,43 @@ namespace cinema_app_back.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Помилка оновлення залу з ID: {id}");
-                return StatusCode(500, "Внутрішня помилка сервера");
+                _logger.LogError(ex, $"Error updating seat with ID: {id}");
+                return StatusCode(500, "Internal server error");
             }
         }
 
-        // DELETE: api/halls/5
+        // DELETE: api/seats/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteHall(int id)
+        public async Task<IActionResult> DeleteSeat(int id)
         {
             try
             {
-                _logger.LogInformation($"Спроба видалення залу з ID: {id}");
+                _logger.LogInformation($"Trying to delete seat with ID: {id}");
 
-                var hall = await _context.Halls.FindAsync(id);
-                if (hall == null)
+                var seat = await _context.Seats.FindAsync(id);
+                if (seat == null)
                 {
-                    _logger.LogWarning($"Зал з ID {id} не знайдено");
+                    _logger.LogWarning($"Seat with ID {id} not found");
                     return NotFound();
                 }
 
-                _context.Halls.Remove(hall);
+                _context.Seats.Remove(seat);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation($"Зал з ID {id} успішно видалено");
+                _logger.LogInformation($"Seat with ID {id} successfully deleted");
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Помилка видалення залу з ID: {id}");
-                return StatusCode(500, "Внутрішня помилка сервера");
+                _logger.LogError(ex, $"Error deleting seat with ID: {id}");
+                return StatusCode(500, "Internal server error");
             }
         }
 
-        private bool HallExists(int id)
+        private bool SeatExists(int id)
         {
-            return _context.Halls.Any(e => e.Id == id);
+            return _context.Seats.Any(e => e.Id == id);
         }
     }
 }

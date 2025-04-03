@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cinema-app-back")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4812bcb41b53c40b3e6b167abcb6ed37af3983a9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4408889352bdfd987e8bbb0e54d016734487ef4d")]
 [assembly: System.Reflection.AssemblyProductAttribute("cinema-app-back")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cinema-app-back")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

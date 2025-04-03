@@ -36,12 +36,13 @@ namespace cinema_app_back.Controllers
 
         // GET: api/movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
             try
             {
                 var movies = await _movieRepository.GetAllWithDetailsAsync();
-                return Ok(movies);
+                var movieDtos = _mapper.Map<List<MovieDto>>(movies);
+                return Ok(movieDtos);
             }
             catch (Exception ex)
             {
@@ -52,16 +53,18 @@ namespace cinema_app_back.Controllers
 
         // GET: api/movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
             try
             {
                 var movie = await _movieRepository.GetByIdWithDetailsAsync(id);
                 if (movie == null)
                 {
-                    return NotFound();
+                    return NotFound(new { error = $"Фільм з ID {id} не знайдено" });
                 }
-                return Ok(movie);
+
+                var movieDto = _mapper.Map<MovieDto>(movie);
+                return Ok(movieDto);
             }
             catch (Exception ex)
             {
@@ -73,7 +76,7 @@ namespace cinema_app_back.Controllers
         // POST: api/movies
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Movie>> CreateMovie([FromForm] MovieDto movieDto, IFormFile imageFile)
+        public async Task<ActionResult<MovieDto>> CreateMovie([FromForm] MovieDto movieDto, IFormFile imageFile)
         {
             try
             {
@@ -117,7 +120,8 @@ namespace cinema_app_back.Controllers
 
                 await _movieRepository.AddAsync(movie);
                 
-                return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
+                var resultDto = _mapper.Map<MovieDto>(movie);
+                return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, resultDto);
             }
             catch (Exception ex)
             {
@@ -129,14 +133,14 @@ namespace cinema_app_back.Controllers
         // PUT: api/movies/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateMovie(int id, [FromForm] MovieDto movieDto, IFormFile imageFile = null)
+        public async Task<ActionResult<MovieDto>> UpdateMovie(int id, [FromForm] MovieDto movieDto, IFormFile imageFile = null)
         {
             try
             {
                 var movie = await _movieRepository.GetByIdAsync(id);
                 if (movie == null)
                 {
-                    return NotFound();
+                    return NotFound(new { error = $"Фільм з ID {id} не знайдено" });
                 }
 
                 if (imageFile != null && imageFile.Length > 0)
@@ -187,7 +191,8 @@ namespace cinema_app_back.Controllers
 
                 await _movieRepository.UpdateAsync(movie);
 
-                return NoContent();
+                var resultDto = _mapper.Map<MovieDto>(movie);
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {
@@ -206,7 +211,7 @@ namespace cinema_app_back.Controllers
                 var movie = await _movieRepository.GetByIdAsync(id);
                 if (movie == null)
                 {
-                    return NotFound();
+                    return NotFound(new { error = $"Фільм з ID {id} не знайдено" });
                 }
 
                 if (!string.IsNullOrEmpty(movie.Image))

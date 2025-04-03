@@ -77,29 +77,70 @@ namespace cinema_app_back.Controllers
         // POST: api/halls
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<HallDto>> CreateHall(HallDto hallDto)
+        public async Task<ActionResult<HallDto>> CreateHall(CreateHallDto createHallDto)
         {
             try
             {
-                _logger.LogInformation($"Спроба створення нового залу");
+                _logger.LogInformation($"Спроба створення нового залу: {System.Text.Json.JsonSerializer.Serialize(createHallDto)}");
                 
-                var cinema = await _context.Cinemas.FindAsync(hallDto.CinemaId);
-                if (cinema == null)
+                if (!ModelState.IsValid)
                 {
-                    return BadRequest($"Кінотеатр з ID {hallDto.CinemaId} не знайдено");
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+                    _logger.LogWarning($"Помилка валідації моделі: {string.Join(", ", errors)}");
+                    return BadRequest(new { errors = ModelState });
                 }
 
-                var hall = _mapper.Map<Hall>(hallDto);
+                var cinema = await _context.Cinemas.FindAsync(createHallDto.CinemaId);
+                if (cinema == null)
+                {
+                    _logger.LogWarning($"Кінотеатр з ID {createHallDto.CinemaId} не знайдено");
+                    return BadRequest(new { errors = new { Cinema = new[] { $"Кінотеатр з ID {createHallDto.CinemaId} не знайдено" } } });
+                }
+
+                var hall = new Hall
+                {
+                    Name = createHallDto.Name,
+                    Rows = createHallDto.Rows,
+                    SeatsPerRow = createHallDto.SeatsPerRow,
+                    CinemaId = createHallDto.CinemaId
+                };
+                
+                // Створюємо місця для залу
+                for (int row = 1; row <= createHallDto.Rows; row++)
+                {
+                    for (int seatNum = 1; seatNum <= createHallDto.SeatsPerRow; seatNum++)
+                    {
+                        var seat = new Seat
+                        {
+                            RowNumber = row,
+                            SeatNumber = seatNum,
+                            DisplayNumber = $"{(char)(64 + row)}{seatNum}",
+                            IsAvailable = true,
+                            IsReserved = false
+                        };
+                        hall.Seats.Add(seat);
+                    }
+                }
+
                 _context.Halls.Add(hall);
                 await _context.SaveChangesAsync();
                 
+                // Завантажуємо створені місця для повернення в DTO
+                await _context.Entry(hall)
+                    .Collection(h => h.Seats)
+                    .LoadAsync();
+                
+                var resultDto = _mapper.Map<HallDto>(hall);
                 _logger.LogInformation($"Зал успішно створено з ID: {hall.Id}");
-                return CreatedAtAction(nameof(GetHall), new { id = hall.Id }, _mapper.Map<HallDto>(hall));
+                
+                return CreatedAtAction(nameof(GetHall), new { id = hall.Id }, resultDto);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Помилка створення залу");
-                return StatusCode(500, $"Внутрішня помилка сервера: {ex.Message}");
+                return StatusCode(500, new { error = "Внутрішня помилка сервера" });
             }
         }
 

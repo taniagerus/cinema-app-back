@@ -1,5 +1,114 @@
 [
   {
+    "ContainingType": "cinema_app_back.Controllers.CinemasController",
+    "Method": "GetCinemas",
+    "RelativePath": "api/cinemas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[cinema_app_back.DTOs.CinemaDto, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.CinemasController",
+    "Method": "CreateCinema",
+    "RelativePath": "api/cinemas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cinemaDto",
+        "Type": "cinema_app_back.DTOs.CinemaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.CinemaDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.CinemasController",
+    "Method": "GetCinema",
+    "RelativePath": "api/cinemas/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.CinemaDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.CinemasController",
+    "Method": "UpdateCinema",
+    "RelativePath": "api/cinemas/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "cinemaDto",
+        "Type": "cinema_app_back.DTOs.CinemaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.CinemasController",
+    "Method": "DeleteCinema",
+    "RelativePath": "api/cinemas/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "cinema_app_back.Controllers.HallsController",
     "Method": "GetHalls",
     "RelativePath": "api/halls",
@@ -28,8 +137,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "hallDto",
-        "Type": "cinema_app_back.DTOs.HallDto",
+        "Name": "createHallDto",
+        "Type": "cinema_app_back.DTOs.CreateHallDto",
         "IsRequired": true
       }
     ],
@@ -118,7 +227,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Movie, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[cinema_app_back.DTOs.MovieDto, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -189,7 +298,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Movie",
+        "Type": "cinema_app_back.DTOs.MovieDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -215,7 +324,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Movie",
+        "Type": "cinema_app_back.DTOs.MovieDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -289,12 +398,105 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.MovieDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "cinema_app_back.Controllers.MoviesController",
     "Method": "DeleteMovie",
     "RelativePath": "api/movies/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.SeatsController",
+    "Method": "GetSeats",
+    "RelativePath": "api/seats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[cinema_app_back.DTOs.SeatDto, cinema-app-back, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.SeatsController",
+    "Method": "GetSeat",
+    "RelativePath": "api/seats/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "cinema_app_back.DTOs.SeatDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.SeatsController",
+    "Method": "UpdateSeat",
+    "RelativePath": "api/seats/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "seatDto",
+        "Type": "cinema_app_back.DTOs.SeatDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "cinema_app_back.Controllers.SeatsController",
+    "Method": "DeleteSeat",
+    "RelativePath": "api/seats/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
