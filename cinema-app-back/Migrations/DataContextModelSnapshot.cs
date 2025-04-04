@@ -271,33 +271,32 @@ namespace cinema_app_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BillingAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CVV")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CardNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExpirationDate")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<string>("UserId")
+                    b.Property<DateTime?>("RefundDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ReserveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TransactionId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ReserveId")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -316,10 +315,7 @@ namespace cinema_app_back.Migrations
                     b.Property<int>("ShowtimeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -329,9 +325,9 @@ namespace cinema_app_back.Migrations
 
                     b.HasIndex("ShowtimeId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Reserve");
+                    b.ToTable("Reserves");
                 });
 
             modelBuilder.Entity("cinema_app_back.Models.Seat", b =>
@@ -422,11 +418,16 @@ namespace cinema_app_back.Migrations
                     b.Property<int?>("ShowtimeId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId");
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
 
-                    b.HasIndex("ReserveId");
+                    b.HasIndex("ReserveId")
+                        .IsUnique();
 
                     b.HasIndex("ShowtimeId");
 
@@ -576,13 +577,13 @@ namespace cinema_app_back.Migrations
 
             modelBuilder.Entity("cinema_app_back.Models.Payment", b =>
                 {
-                    b.HasOne("cinema_app_back.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("cinema_app_back.Models.Reserve", "Reserve")
+                        .WithOne("Payment")
+                        .HasForeignKey("cinema_app_back.Models.Payment", "ReserveId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Reserve");
                 });
 
             modelBuilder.Entity("cinema_app_back.Models.Reserve", b =>
@@ -601,7 +602,7 @@ namespace cinema_app_back.Migrations
 
                     b.HasOne("cinema_app_back.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -653,14 +654,14 @@ namespace cinema_app_back.Migrations
             modelBuilder.Entity("cinema_app_back.Models.Ticket", b =>
                 {
                     b.HasOne("cinema_app_back.Models.Payment", "Payment")
-                        .WithMany()
-                        .HasForeignKey("PaymentId")
+                        .WithOne("Ticket")
+                        .HasForeignKey("cinema_app_back.Models.Ticket", "PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("cinema_app_back.Models.Reserve", "Reserve")
-                        .WithMany()
-                        .HasForeignKey("ReserveId")
+                        .WithOne("Ticket")
+                        .HasForeignKey("cinema_app_back.Models.Ticket", "ReserveId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -688,6 +689,21 @@ namespace cinema_app_back.Migrations
                     b.Navigation("Seats");
 
                     b.Navigation("Showtimes");
+                });
+
+            modelBuilder.Entity("cinema_app_back.Models.Payment", b =>
+                {
+                    b.Navigation("Ticket")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cinema_app_back.Models.Reserve", b =>
+                {
+                    b.Navigation("Payment")
+                        .IsRequired();
+
+                    b.Navigation("Ticket")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("cinema_app_back.Models.Showtime", b =>

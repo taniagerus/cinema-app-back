@@ -48,7 +48,6 @@ namespace cinema_app_back.Controllers
             }
         }
 
-        // GET: api/halls/5
         [HttpGet("{id}")]
         public async Task<ActionResult<HallDto>> GetHall(int id)
         {
@@ -57,15 +56,19 @@ namespace cinema_app_back.Controllers
                 _logger.LogInformation($"Отримання інформації про зал з ID: {id}");
                 var hall = await _context.Halls
                     .Include(h => h.Cinema)
+                    .Include(h => h.Seats)  // Додаємо включення місць
                     .FirstOrDefaultAsync(h => h.Id == id);
-                    
+
                 if (hall == null)
                 {
                     _logger.LogWarning($"Зал з ID {id} не знайдено");
                     return NotFound();
                 }
 
-                return _mapper.Map<HallDto>(hall);
+                var hallDto = _mapper.Map<HallDto>(hall);
+                _logger.LogInformation($"Знайдено {hallDto.Seats?.Count ?? 0} місць для залу {id}");
+
+                return hallDto;
             }
             catch (Exception ex)
             {

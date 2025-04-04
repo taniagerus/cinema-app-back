@@ -1,11 +1,28 @@
-﻿namespace cinema_app_back.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using cinema_app_back.Models.Enums;
+
+namespace cinema_app_back.Models
 {
     public class Ticket
     {
-     public int Id { get; set; }
-        public virtual Reserve Reserve { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
         public int ReserveId { get; set; }
-        public virtual Payment Payment { get; set; }
+
+        [Required]
         public int PaymentId { get; set; }
+
+        [Required]
+        public TicketStatus Status { get; set; }
+
+        // Navigation properties
+        [ForeignKey("ReserveId")]
+        public virtual Reserve Reserve { get; set; }
+
+        [ForeignKey("PaymentId")]
+        public virtual Payment Payment { get; set; }
     }
 }

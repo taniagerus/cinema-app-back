@@ -27,7 +27,15 @@ namespace cinema_app_back.Mappings
 
             // Ticket маппінги
             CreateMap<Ticket, TicketDto>();
-            CreateMap<TicketDto, Ticket>();
+            CreateMap<CreateTicketDto, Ticket>();
+
+            // Payment маппінги
+            CreateMap<Payment, PaymentDto>();
+            CreateMap<CreatePaymentDto, Payment>();
+
+            // Reserve маппінги
+            CreateMap<Reserve, ReserveDto>();
+            CreateMap<CreateReserveDto, Reserve>();
 
             // User маппінги
             CreateMap<User, UserDto>();

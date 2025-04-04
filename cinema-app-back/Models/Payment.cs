@@ -1,14 +1,38 @@
-﻿namespace cinema_app_back.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using cinema_app_back.Models.Enums;
+
+namespace cinema_app_back.Models
 {
     public class Payment
     {
+        [Key]
         public int Id { get; set; }
-        public string UserId { get; set; } // Foreign key
-        public virtual User User { get; set; } // Navigation property
-        public string PaymentMethod { get; set; } // e.g., "Credit Card"
-        public string CardNumber { get; set; } // e.g., "1234 5678 1234 5678"
-        public string ExpirationDate { get; set; } // e.g., "12/23"
-        public string CVV { get; set; } // e.g., "123"
-        public string BillingAddress { get; set; } // e.g., "1234 Main St, Springfield, IL 62701"
+
+        [Required]
+        public int ReserveId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string PaymentMethod { get; set; }
+
+        [Required]
+        public DateTime PaymentDate { get; set; }
+
+        public DateTime? RefundDate { get; set; }
+
+        [Required]
+        public PaymentStatus Status { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string TransactionId { get; set; }
+
+        // Navigation properties
+        [ForeignKey("ReserveId")]
+        public virtual Reserve Reserve { get; set; }
+
+        public virtual Ticket Ticket { get; set; }
     }
 }
