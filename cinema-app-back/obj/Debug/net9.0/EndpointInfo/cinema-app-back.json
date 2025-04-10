@@ -10,6 +10,107 @@
     "version": "v1"
   },
   "paths": {
+    "/api/analytics/sales": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "week"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/movies": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/days": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/summary": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/analytics/performance": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "week"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/cinemas": {
       "get": {
         "tags": [
@@ -807,6 +908,61 @@
         }
       }
     },
+    "/api/payment/update-amounts": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/payment/summary": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/payment/validate-card": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardValidationRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardValidationRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardValidationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/reserve": {
       "get": {
         "tags": [
@@ -891,6 +1047,44 @@
         }
       }
     },
+    "/api/reserve/active": {
+      "get": {
+        "tags": [
+          "Reserve"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/reserve/{id}": {
       "get": {
         "tags": [
@@ -948,6 +1142,106 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/reserve/showtime/{showtimeId}/seats": {
+      "get": {
+        "tags": [
+          "Reserve"
+        ],
+        "parameters": [
+          {
+            "name": "showtimeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reserve/user/{userId}/future": {
+      "get": {
+        "tags": [
+          "Reserve"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReserveDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1098,32 +1392,11 @@
         ],
         "parameters": [
           {
-            "name": "movieId",
+            "name": "includePast",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "startTimeFrom",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "startTimeTo",
-            "in": "query",
-            "schema": {
-              "type": "string"
+              "type": "boolean",
+              "default": false
             }
           }
         ],
@@ -1303,6 +1576,120 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/showtimes/movie/{id}": {
+      "get": {
+        "tags": [
+          "Showtimes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includePast",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/showtimes/cinema/{id}": {
+      "get": {
+        "tags": [
+          "Showtimes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includePast",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowtimeDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1696,6 +2083,45 @@
         }
       }
     },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/weatherforecast": {
       "get": {
         "tags": [
@@ -1766,6 +2192,52 @@
           "role": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CardDetailsDto": {
+        "type": "object",
+        "properties": {
+          "lastFourDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardholderName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CardValidationRequest": {
+        "required": [
+          "cardholderName",
+          "cardNumber",
+          "cvc",
+          "expiryDate"
+        ],
+        "type": "object",
+        "properties": {
+          "cardNumber": {
+            "minLength": 1,
+            "pattern": "^\\d{16}$",
+            "type": "string"
+          },
+          "expiryDate": {
+            "minLength": 1,
+            "pattern": "^\\d{2}/\\d{2}$",
+            "type": "string"
+          },
+          "cvc": {
+            "minLength": 1,
+            "pattern": "^\\d{3,4}$",
+            "type": "string"
+          },
+          "cardholderName": {
+            "maxLength": 100,
+            "minLength": 2,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1899,6 +2371,13 @@
           "paymentMethod": {
             "minLength": 1,
             "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "cardDetails": {
+            "$ref": "#/components/schemas/CardDetailsDto"
           }
         },
         "additionalProperties": false
@@ -2086,6 +2565,11 @@
             "type": "string",
             "nullable": true
           },
+          "releaseDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "showtimes": {
             "type": "array",
             "items": {
@@ -2174,6 +2658,10 @@
           "transactionId": {
             "type": "string",
             "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -2227,32 +2715,33 @@
         "additionalProperties": false
       },
       "ReserveDto": {
+        "required": [
+          "userId"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
           },
-          "showtimeId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "userId": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
-          "seatId": {
-            "type": "integer",
-            "format": "int32"
+          "isActive": {
+            "type": "boolean"
           },
           "showtime": {
             "$ref": "#/components/schemas/ShowtimeDto"
           },
-          "user": {
-            "$ref": "#/components/schemas/UserDto"
-          },
           "seat": {
             "$ref": "#/components/schemas/SeatDto"
+          },
+          "payment": {
+            "$ref": "#/components/schemas/PaymentDto"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/TicketDto"
           }
         },
         "additionalProperties": false
@@ -2464,6 +2953,14 @@
           "phoneNumber": {
             "type": "string",
             "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

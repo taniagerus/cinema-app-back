@@ -1,4 +1,5 @@
 ﻿using cinema_app_back.Models;
+using System;
 
 public class Movie
 {
@@ -11,5 +12,6 @@ public class Movie
     public int DurationInMinutes { get; set; } // Duration of the movie in minutes
     public string Director { get; set; }
     public string Language { get; set; }
+    public DateTime? ReleaseDate { get; set; } // Дата прем'єри фільму
     public virtual ICollection<Showtime> Showtimes { get; set; } // A movie can have many showtimes
 }

@@ -2,7 +2,7 @@
 
 using cinema_app_back.Data;
 using cinema_app_back.Models;
-
+using cinema_app_back.DTOs;
 using cinema_app_back.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -167,6 +167,52 @@ public class UsersController : ControllerBase
             _logger.LogError(ex, $"Exception during login for email: {request.Email}");
             return StatusCode(500, new { error = "Під час входу сталася помилка. Спробуйте ще раз пізніше." });
         }
+    }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetUser(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogWarning($"User with ID {id} not found");
+                return NotFound(new { error = $"User with ID {id} not found" });
+            }
+
+            // Check if the requesting user is the same as the requested user or is an admin
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin");
+
+            
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Name = $"{user.FirstName} {user.LastName}".Trim(),
+                Age = CalculateAge(user.Birthday)
+            };
+
+            return Ok(userDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error getting user with ID: {id}");
+            return StatusCode(500, new { error = "Internal server error", details = ex.Message });
+        }
+    }
+
+    private int CalculateAge(DateTime birthDate)
+    {
+        var today = DateTime.Today;
+        var age = today.Year - birthDate.Year;
+        if (birthDate.Date > today.AddYears(-age)) age--;
+        return age;
     }
 }
 

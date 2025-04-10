@@ -1,4 +1,4 @@
-namespace cinema_app_back.Services;
+﻿namespace cinema_app_back.Services;
 using cinema_app_back.Models;
 
 using System.IdentityModel.Tokens.Jwt;

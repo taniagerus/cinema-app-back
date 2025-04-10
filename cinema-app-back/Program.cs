@@ -125,6 +125,9 @@ builder.Services.AddScoped<RoleBasedDbContextFactory>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IShowtimesRepository, ShowtimesRepository>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+builder.Services.AddScoped<IHallRepository, HallRepository>();
+builder.Services.AddScoped<IReservesRepository, ReservesRepository>();
 
 // Add Identity
 builder.Services

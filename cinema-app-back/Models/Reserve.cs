@@ -16,6 +16,15 @@ namespace cinema_app_back.Models
 
         [Required]
         public int SeatId { get; set; }
+        
+        [Required]
+        public DateTime ReservationTime { get; set; } = DateTime.UtcNow;
+        
+        [Required]
+        public bool IsActive { get; set; } = true;
+        
+        [Required]
+        public bool IsPaid { get; set; } = false;
 
         // Navigation properties
         [ForeignKey("ShowtimeId")]

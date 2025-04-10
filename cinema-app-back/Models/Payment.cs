@@ -29,6 +29,9 @@ namespace cinema_app_back.Models
         [StringLength(100)]
         public string TransactionId { get; set; }
 
+        [Required]
+        public decimal Amount { get; set; }
+
         // Navigation properties
         [ForeignKey("ReserveId")]
         public virtual Reserve Reserve { get; set; }

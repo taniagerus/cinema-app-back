@@ -13,14 +13,6 @@ namespace cinema_app_back.DTOs
         public DateTime? RefundDate { get; set; }
         public PaymentStatus Status { get; set; }
         public string TransactionId { get; set; }
-    }
-
-    public class CreatePaymentDto
-    {
-        [Required(ErrorMessage = "ReserveId is required")]
-        public int ReserveId { get; set; }
-
-        [Required(ErrorMessage = "Payment method is required")]
-        public string PaymentMethod { get; set; }
+        public decimal Amount { get; set; }
     }
 }

@@ -22,86 +22,48 @@ namespace cinema_app_back.Controllers
         private readonly IShowtimesRepository _showtimesRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ShowtimesController> _logger;
+        private readonly IMovieRepository _movieRepository;
+        private readonly ICinemaRepository _cinemaRepository;
 
         public ShowtimesController(
             IShowtimesRepository showtimesRepository,
             IMapper mapper,
-            ILogger<ShowtimesController> logger)
+            ILogger<ShowtimesController> logger,
+            IMovieRepository movieRepository,
+            ICinemaRepository cinemaRepository)
         {
             _showtimesRepository = showtimesRepository;
             _mapper = mapper;
             _logger = logger;
+            _movieRepository = movieRepository;
+            _cinemaRepository = cinemaRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShowtimeDto>>> GetShowtimes(
-     [FromQuery] int? movieId,
-     [FromQuery] string? date,
-     [FromQuery] string? startTimeFrom,
-     [FromQuery] string? startTimeTo)
+        public async Task<ActionResult<IEnumerable<ShowtimeDto>>> GetShowtimes([FromQuery] bool includePast = false)
         {
             try
             {
-                _logger.LogInformation("Отримання списку сеансів з фільтрами");
-                var showtimes = await _showtimesRepository.GetAllWithDetailsAsync();
-
-                // Фільтруємо за movieId, якщо вказано
-                if (movieId.HasValue)
+                IEnumerable<Showtime> showtimes;
+                if (includePast)
                 {
-                    showtimes = showtimes.Where(s => s.MovieId == movieId.Value);
+                    showtimes = await _showtimesRepository.GetAllWithDetailsAsync();
+                }
+                else
+                {
+                    showtimes = await _showtimesRepository.GetActiveShowtimesAsync().ToListAsync();
                 }
 
-                // Фільтруємо за датою, якщо вказано
-                if (!string.IsNullOrEmpty(date) && DateTime.TryParse(date, out DateTime filterDate))
-                {
-                    showtimes = showtimes.Where(s =>
-                        s.StartTime.Date == filterDate.Date);
-                }
-
-                // Фільтруємо за часом початку "від", якщо вказано
-                if (!string.IsNullOrEmpty(startTimeFrom) && TimeSpan.TryParse(startTimeFrom, out TimeSpan fromTime))
-                {
-                    showtimes = showtimes.Where(s =>
-                        s.StartTime.TimeOfDay >= fromTime);
-                }
-
-                // Фільтруємо за часом початку "до", якщо вказано
-                if (!string.IsNullOrEmpty(startTimeTo) && TimeSpan.TryParse(startTimeTo, out TimeSpan toTime))
-                {
-                    showtimes = showtimes.Where(s =>
-                        s.StartTime.TimeOfDay <= toTime);
-                }
-
-                _logger.LogInformation($"Знайдено {showtimes.Count()} сеансів після фільтрації");
-
-                var showtimeDtos = _mapper.Map<List<ShowtimeDto>>(showtimes);
-
-                // Перевіряємо, чи всі зв'язані сутності завантажені правильно
-                foreach (var dto in showtimeDtos)
-                {
-                    if (dto.Movie == null)
-                    {
-                        _logger.LogWarning($"Для сеансу {dto.Id} не знайдено фільм з ID {dto.MovieId}");
-                    }
-                    if (dto.Hall == null)
-                    {
-                        _logger.LogWarning($"Для сеансу {dto.Id} не знайдено зал з ID {dto.HallId}");
-                    }
-                    if (dto.Cinema == null)
-                    {
-                        _logger.LogWarning($"Для сеансу {dto.Id} не знайдено кінотеатр з ID {dto.CinemaId}");
-                    }
-                }
-
-                return showtimeDtos;
+                _logger.LogInformation($"Retrieved {showtimes.Count()} showtimes with includePast={includePast}");
+                return Ok(_mapper.Map<IEnumerable<ShowtimeDto>>(showtimes));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Помилка при отриманні списку сеансів");
-                return StatusCode(500, new { error = "Внутрішня помилка сервера", details = ex.Message });
+                _logger.LogError($"Error retrieving showtimes: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
         }
-        // GET: api/showtimes/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ShowtimeDto>> GetShowtime(int id)
         {
@@ -141,7 +103,6 @@ namespace cinema_app_back.Controllers
             }
         }
 
-        // POST: api/showtimes
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ShowtimeDto>> CreateShowtime(ShowtimeDto showtimeDto)
@@ -153,29 +114,6 @@ namespace cinema_app_back.Controllers
                 // Конвертація часу в UTC
                 var startTimeUtc = DateTime.SpecifyKind(showtimeDto.StartTime, DateTimeKind.Utc);
                 var endTimeUtc = DateTime.SpecifyKind(showtimeDto.EndTime, DateTimeKind.Utc);
-                var currentTimeUtc = DateTime.UtcNow;
-
-                // Перевірка чи дата не в минулому
-                if (startTimeUtc <= currentTimeUtc)
-                {
-                    return BadRequest("Час початку сеансу має бути в майбутньому");
-                }
-
-                // Перевірка дат
-                if (endTimeUtc <= startTimeUtc)
-                {
-                    return BadRequest("Час завершення має бути пізніше часу початку");
-                }
-
-                // Перевірка на перекриття сеансів в тому ж залі
-                var hasOverlap = await _showtimesRepository.HasOverlappingShowtimeAsync(
-                    startTimeUtc, 
-                    endTimeUtc, 
-                    showtimeDto.HallId);
-                if (hasOverlap)
-                {
-                    return BadRequest("На цей час в цьому залі вже заплановано інший сеанс");
-                }
 
                 var hall = await _showtimesRepository.GetHallWithCinemaAsync(showtimeDto.HallId);
                 if (hall == null)
@@ -193,7 +131,22 @@ namespace cinema_app_back.Controllers
                 showtime.EndTime = endTimeUtc;
                 showtime.CinemaId = hall.Cinema.Id;
                 
-                await _showtimesRepository.AddAsync(showtime);
+                try
+                {
+                    await _showtimesRepository.AddAsync(showtime);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("End time must be after start time") == true)
+                {
+                    return BadRequest("Час завершення має бути пізніше часу початку");
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("Showtime overlaps") == true)
+                {
+                    return BadRequest("На цей час в цьому залі вже заплановано інший сеанс");
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("Start time must be in the future") == true)
+                {
+                    return BadRequest("Час початку сеансу має бути в майбутньому");
+                }
                 
                 _logger.LogInformation($"Сеанс успішно створено з ID: {showtime.Id}");
                 return CreatedAtAction(nameof(GetShowtime), new { id = showtime.Id }, _mapper.Map<ShowtimeDto>(showtime));
@@ -205,7 +158,6 @@ namespace cinema_app_back.Controllers
             }
         }
 
-        // PUT: api/showtimes/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateShowtime(int id, ShowtimeDto showtimeDto)
@@ -244,7 +196,22 @@ namespace cinema_app_back.Controllers
                 showtime.HallId = showtimeDto.HallId;
                 showtime.CinemaId = hall.Cinema.Id;
 
-                await _showtimesRepository.UpdateAsync(showtime);
+                try
+                {
+                    await _showtimesRepository.UpdateAsync(showtime);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("End time must be after start time") == true)
+                {
+                    return BadRequest("Час завершення має бути пізніше часу початку");
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("Showtime overlaps") == true)
+                {
+                    return BadRequest("На цей час в цьому залі вже заплановано інший сеанс");
+                }
+                catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("Start time must be in the future") == true)
+                {
+                    return BadRequest("Час початку сеансу має бути в майбутньому");
+                }
                 
                 _logger.LogInformation($"Сеанс з ID {id} успішно оновлено");
                 return NoContent();
@@ -256,7 +223,6 @@ namespace cinema_app_back.Controllers
             }
         }
 
-        // DELETE: api/showtimes/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteShowtime(int id)
@@ -281,6 +247,74 @@ namespace cinema_app_back.Controllers
             {
                 _logger.LogError(ex, $"Помилка видалення сеансу з ID: {id}");
                 return StatusCode(500, "Внутрішня помилка сервера");
+            }
+        }
+
+        [HttpGet("movie/{id}")]
+        public async Task<ActionResult<IEnumerable<ShowtimeDto>>> GetShowtimesByMovie(int id, [FromQuery] bool includePast = false)
+        {
+            try
+            {
+                var movie = await _movieRepository.GetByIdWithDetailsAsync(id);
+                if (movie == null)
+                {
+                    return NotFound($"Movie with ID {id} not found");
+                }
+
+                IEnumerable<Showtime> showtimes;
+                if (includePast)
+                {
+                    showtimes = await _showtimesRepository.GetByMovieAsync(id).ToListAsync();
+                }
+                else
+                {
+                    showtimes = await _showtimesRepository
+                        .GetByMovieAsync(id)
+                        .Where(s => s.StartTime > DateTime.UtcNow)
+                        .ToListAsync();
+                }
+
+                _logger.LogInformation($"Retrieved {showtimes.Count()} showtimes for movie ID {id} with includePast={includePast}");
+                return Ok(_mapper.Map<IEnumerable<ShowtimeDto>>(showtimes));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error retrieving showtimes for movie ID {id}: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("cinema/{id}")]
+        public async Task<ActionResult<IEnumerable<ShowtimeDto>>> GetShowtimesByCinema(int id, [FromQuery] bool includePast = false)
+        {
+            try
+            {
+                var cinemaExists = await _cinemaRepository.CinemaExistsAsync(id);
+                if (!cinemaExists)
+                {
+                    return NotFound($"Cinema with ID {id} not found");
+                }
+
+                IEnumerable<Showtime> showtimes;
+                if (includePast)
+                {
+                    showtimes = await _showtimesRepository.GetByCinemaAsync(id).ToListAsync();
+                }
+                else
+                {
+                    showtimes = await _showtimesRepository
+                        .GetByCinemaAsync(id)
+                        .Where(s => s.StartTime > DateTime.UtcNow)
+                        .ToListAsync();
+                }
+
+                _logger.LogInformation($"Retrieved {showtimes.Count()} showtimes for cinema ID {id} with includePast={includePast}");
+                return Ok(_mapper.Map<IEnumerable<ShowtimeDto>>(showtimes));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error retrieving showtimes for cinema ID {id}: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
         }
     }
